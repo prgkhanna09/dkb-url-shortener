@@ -17,7 +17,7 @@ class UrlService(
         val log = LoggerFactory.getLogger(this::class.java.toString())!!
     }
 
-    fun createShortUrl(request: ShortenUrlRequest): String {
+    fun shortenUrl(request: ShortenUrlRequest): String {
         urlValidator.validateURL(request.url)
 
         log.info("Generating short URL for : {}", request.url)

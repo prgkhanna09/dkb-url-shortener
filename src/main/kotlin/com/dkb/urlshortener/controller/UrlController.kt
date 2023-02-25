@@ -24,12 +24,12 @@ class UrlController(
 
     @PostMapping(produces = [MediaType.APPLICATION_JSON_VALUE], consumes = [MediaType.APPLICATION_JSON_VALUE])
     suspend fun shortenUrl(@RequestBody @Valid request: ShortenUrlRequest): ResponseEntity<ShortenUrlResponse> {
-        val shortUrl = urlService.createShortUrl(request)
+        val shortUrl = urlService.shortenUrl(request)
         return ResponseEntity.ok(ShortenUrlResponse(shortUrl))
     }
 
     @GetMapping("/{shortUrl}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    suspend fun getFullUrl(@PathVariable("shortUrl") @Valid @NotBlank shortUrl: String): ResponseEntity<String> {
+    suspend fun resolveShortUrl(@PathVariable("shortUrl") @Valid @NotBlank shortUrl: String): ResponseEntity<String> {
         val originalUrl = urlService.resolveShortUrl(shortUrl)
         return ResponseEntity.ok(originalUrl)
     }
