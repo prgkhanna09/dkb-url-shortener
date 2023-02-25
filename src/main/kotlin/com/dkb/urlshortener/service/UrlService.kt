@@ -4,6 +4,7 @@ import com.dkb.urlshortener.model.ShortenUrlRequest
 import com.dkb.urlshortener.utils.Constants
 import com.dkb.urlshortener.utils.IdentifierGenerator
 import com.dkb.urlshortener.utils.URLValidator
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,8 +13,14 @@ class UrlService(
     private val urlValidator: URLValidator
 ) {
 
+    companion object {
+        val log = LoggerFactory.getLogger(this::class.java.toString())!!
+    }
+
     fun createShortUrl(request: ShortenUrlRequest): String {
         urlValidator.validateURL(request.url)
+
+        log.info("Generating short URL for : {}", request.url)
         // We need to take care of concurrent requests here, there are possible solutions here:
         // 1. apply lock here, which will make request wait for the lock to be released
         // 2. We already have a unique constraints on shortUrl, as well as originalUrl + shortUrl combination. So duplicate entries will be avoided
@@ -26,6 +33,7 @@ class UrlService(
 
     fun resolveShortUrl(shortUrl: String): String {
         urlValidator.validateURL(shortUrl)
+        log.info("Resolving URL for : {}", shortUrl)
         var hash = shortUrl.substringAfterLast("/")
         return "test$hash"
     }
