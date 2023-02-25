@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -28,8 +29,8 @@ class UrlController(
         return ResponseEntity.ok(ShortenUrlResponse(shortUrl))
     }
 
-    @GetMapping("/{shortUrl}", produces = [MediaType.APPLICATION_JSON_VALUE])
-    suspend fun resolveShortUrl(@PathVariable("shortUrl") @Valid @NotBlank shortUrl: String): ResponseEntity<String> {
+    @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
+    suspend fun resolveShortUrl(@RequestParam("shortUrl") @Valid @NotBlank shortUrl: String): ResponseEntity<String> {
         val originalUrl = urlService.resolveShortUrl(shortUrl)
         return ResponseEntity.ok(originalUrl)
     }
