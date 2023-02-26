@@ -1,5 +1,6 @@
 package com.dkb.urlshortener.controller
 
+import com.dkb.urlshortener.Constants
 import com.dkb.urlshortener.handler.exception.InvalidURLException
 import com.dkb.urlshortener.model.ShortenUrlRequest
 import com.dkb.urlshortener.model.ShortenUrlResponse
@@ -28,11 +29,9 @@ class UrlControllerTests {
 
     @Test
     fun `testShortenUrlOK`() {
-        val originalURL = "http://google.com"
-        val shortUrl = "ojc23BF"
-        val shortenUrlRequest = ShortenUrlRequest(originalURL)
-        val shortenUrlResponse = ShortenUrlResponse(shortUrl)
-        Mockito.`when`(urlService.shortenUrl(any())).thenReturn(Mono.just(shortUrl))
+        val shortenUrlRequest = ShortenUrlRequest(Constants.GOOGLE_URL)
+        val shortenUrlResponse = ShortenUrlResponse(Constants.SAMPLE_SHORT_URL)
+        Mockito.`when`(urlService.shortenUrl(any())).thenReturn(Mono.just(Constants.SAMPLE_SHORT_URL))
 
         val webClient = WebTestClient.bindToController(UrlController(urlService)).build()
         webClient.post()
@@ -66,28 +65,25 @@ class UrlControllerTests {
 
     @Test
     fun `testResolveShortUrlOK`() {
-        val originalURL = "http://google.com"
-        val shortUrl = "ojc23BF"
-        Mockito.`when`(urlService.resolveShortUrl(ArgumentMatchers.anyString())).thenReturn(Mono.just(originalURL))
+        Mockito.`when`(urlService.resolveShortUrl(ArgumentMatchers.anyString())).thenReturn(Mono.just(Constants.GOOGLE_URL))
 
         val webClient = WebTestClient.bindToController(UrlController(urlService)).build()
         webClient.get()
-            .uri("/api/urls?shortUrl=$shortUrl")
+            .uri(Constants.SAMPLE_SHORT_URL_API)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
             .expectBody(String::class.java)
-            .isEqualTo(originalURL)
+            .isEqualTo(Constants.GOOGLE_URL)
     }
 
     @Test
     fun `testResolveShortUrlBadRequest`() {
-        val shortUrl = "ojc23BF"
         Mockito.`when`(urlService.resolveShortUrl(ArgumentMatchers.anyString())).thenThrow(InvalidURLException())
 
         val webClient = WebTestClient.bindToController(UrlController(urlService)).build()
         webClient.get()
-            .uri("/api/urls?shortUrl=$shortUrl")
+            .uri(Constants.SAMPLE_SHORT_URL_API)
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().is5xxServerError
