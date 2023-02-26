@@ -1,5 +1,8 @@
 package com.dkb.urlshortener.model
 
-data class ShortenUrlRequest(val url: String)
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotNull
+
+data class ShortenUrlRequest(@NotNull @Valid val url: String)
 
 data class ShortenUrlResponse(val url: String)

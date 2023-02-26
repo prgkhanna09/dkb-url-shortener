@@ -6,6 +6,7 @@ plugins {
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
+    id("org.flywaydb.flyway") version "9.8.1"
 }
 
 group = "com.dkb"
@@ -17,6 +18,8 @@ repositories {
     maven { url = uri("https://repo.spring.io/milestone") }
 }
 
+val jdbc = configurations.create("jdbc")
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
@@ -25,14 +28,13 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("jakarta.persistence:jakarta.persistence-api")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
+    jdbc("org.postgresql:postgresql:42.5.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-
 }
 
 tasks.withType<KotlinCompile> {
@@ -44,4 +46,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+flyway {
+    configurations = arrayOf("jdbc")
+    url = "jdbc:postgresql://localhost:5432/url-shortener"
+    user = "postgres"
+    password = "postgres"
+    baselineOnMigrate = true
 }

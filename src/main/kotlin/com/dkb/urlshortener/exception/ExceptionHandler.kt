@@ -16,7 +16,6 @@ public class ExceptionHandler {
 
     @ExceptionHandler(UrlPersistException::class)
     fun handleUrlPersistException() = ResponseEntity("Error while persisting the URL", HttpStatus.INTERNAL_SERVER_ERROR)
-
 }
 
 class InvalidURLException : RuntimeException()

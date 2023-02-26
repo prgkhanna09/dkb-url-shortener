@@ -17,7 +17,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.client.HttpClientErrorException.BadRequest
 import reactor.core.publisher.Mono
-import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,7 +32,7 @@ class UrlControllerTests {
         val shortUrl = "ojc23BF"
         val shortenUrlRequest = ShortenUrlRequest(originalURL)
         val shortenUrlResponse = ShortenUrlResponse(shortUrl)
-        Mockito.`when`(urlService.shortenUrl(any())).thenReturn(shortUrl)
+        Mockito.`when`(urlService.shortenUrl(any())).thenReturn(Mono.just(shortUrl))
 
         val webClient = WebTestClient.bindToController(UrlController(urlService)).build()
         webClient.post()
@@ -69,11 +68,11 @@ class UrlControllerTests {
     fun `testResolveShortUrlOK`() {
         val originalURL = "http://google.com"
         val shortUrl = "ojc23BF"
-        Mockito.`when`(urlService.resolveShortUrl(ArgumentMatchers.anyString())).thenReturn(originalURL)
+        Mockito.`when`(urlService.resolveShortUrl(ArgumentMatchers.anyString())).thenReturn(Mono.just(originalURL))
 
         val webClient = WebTestClient.bindToController(UrlController(urlService)).build()
         webClient.get()
-            .uri("/api/urls/{shortUrl", shortUrl)
+            .uri("/api/urls?shortUrl=$shortUrl")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().isOk
@@ -88,7 +87,7 @@ class UrlControllerTests {
 
         val webClient = WebTestClient.bindToController(UrlController(urlService)).build()
         webClient.get()
-            .uri("/api/urls/{shortUrl", shortUrl)
+            .uri("/api/urls?shortUrl=$shortUrl")
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
             .expectStatus().is5xxServerError
