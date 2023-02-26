@@ -1,4 +1,4 @@
-package com.mobimeo.challenge
+package com.dkb.urlshortener
 
 import io.cucumber.spring.CucumberContextConfiguration
 import org.springframework.boot.test.context.SpringBootTest

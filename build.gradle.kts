@@ -8,6 +8,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     id("org.flywaydb.flyway") version "9.8.1"
     jacoco
+    id("com.adarshr.test-logger") version "3.2.0"
 }
 
 group = "com.dkb"
@@ -36,6 +37,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("io.cucumber:cucumber-java:6.10.4")
+    testImplementation("io.cucumber:cucumber-spring:6.10.4")
+    testImplementation("io.cucumber:cucumber-junit-platform-engine:6.10.4")
+    testRuntimeOnly("org.junit.platform:junit-platform-console")
 }
 
 tasks.withType<KotlinCompile> {
@@ -43,10 +48,6 @@ tasks.withType<KotlinCompile> {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
     }
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
 
 flyway {
@@ -78,5 +79,32 @@ tasks.jacocoTestCoverageVerification {
 
             excludes = listOf("io.github.raeperd.realworldspringbootkotlin")
         }
+    }
+}
+
+tasks {
+    val consoleLauncherTest by registering(JavaExec::class) {
+        dependsOn(testClasses)
+        doFirst {
+            println("Running parallel test")
+        }
+        classpath = sourceSets["test"].runtimeClasspath
+        mainClass.set("org.junit.platform.console.ConsoleLauncher")
+        args("--include-engine", "cucumber")
+        args("--details", "tree")
+        args("--scan-classpath")
+
+        systemProperty("cucumber.execution.parallel.enabled", true)
+        systemProperty("cucumber.execution.parallel.config.strategy", "dynamic")
+        systemProperty(
+            "cucumber.plugin",
+            "pretty, summary, timeline:build/reports/timeline, html:build/reports/cucumber.html"
+        )
+        systemProperty("cucumber.publish.quiet", true)
+    }
+
+    test {
+        dependsOn(consoleLauncherTest)
+        useJUnitPlatform()
     }
 }

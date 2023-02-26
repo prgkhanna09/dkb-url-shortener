@@ -56,7 +56,7 @@ class UrlServiceTest {
         Mockito.`when`(urlValidator.validateURL(ArgumentMatchers.anyString())).thenThrow(InvalidURLException())
 
         Assertions.assertThrows(InvalidURLException::class.java) {
-            val originalUrlMono = urlService.shortenUrl(urlRequest)
+            urlService.shortenUrl(urlRequest)
         }
     }
 
@@ -77,7 +77,7 @@ class UrlServiceTest {
         Mockito.`when`(urlValidator.validateURL(ArgumentMatchers.anyString())).thenThrow(InvalidURLException())
 
         Assertions.assertThrows(InvalidURLException::class.java) {
-            val originalUrlMono = urlService.resolveShortUrl(Constants.SAMPLE_SHORT_URL)
+            urlService.resolveShortUrl(Constants.SAMPLE_SHORT_URL)
         }
     }
 }

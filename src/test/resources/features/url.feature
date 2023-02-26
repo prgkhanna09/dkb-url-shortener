@@ -1,16 +1,8 @@
-Feature: Get Customer with assets info
+Feature: URL Shortener tests, to be run as a regression test
 
-  @GetCustomerWithAssets
-  Scenario: As a customer, I should be able to get all the assets with my info if they exists
-    Given Customer externalId 14
-    When Fetch Customer With Assets for externalId
-    Then Assets size 2
-    And Customer name is 'Han Solo'
-
-  @GetCustomerWithAssets
-  Scenario: As a customer, I should be able to get all the assets with my info if they doesn't exists
-    Given Customer externalId 2
-    When Fetch Customer With Assets for externalId
-    Then Assets size 0
-    And Customer name is 'C-3PO'
+  @ResolveShortUrl
+  Scenario: As a customer, I should be able to get original url from a short url
+    Given Short url is 'http://www.dkb.com/bcH0MIm'
+    When Resolve URL is called
+    Then Original URL is 'http://www.google.com'
 

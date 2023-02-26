@@ -1,6 +1,5 @@
-package com.mobimeo.challenge
+package com.dkb.urlshortener
 
-import com.mobimeo.challenge.model.CustomerWithAssets
 import io.cucumber.java.Before
 import io.cucumber.java.Scenario
 import io.cucumber.java.en.Given
@@ -10,51 +9,46 @@ import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 
-class CustomerWithAssetsDef : SpringContextConfiguration() {
+class UrlShortenerDef : SpringContextConfiguration() {
 
     companion object {
         val log = LoggerFactory.getLogger(this::class.java.toString())!!
-        const val URL = "http://localhost:8080/customers/{externalId}"
+        const val URL = "http://localhost:8080/api/urls?shortUrl="
     }
 
-    var externalId: Int? = null
-    var customerWithAssets: CustomerWithAssets? = null
+    var shortUrl: String? = null
+    var originalUrl: String? = null
     var webClient: WebClient = WebClient.create()
 
     @Before
     fun setup(scenario: Scenario) {
         log.info("Running Scenario : {}", scenario.name)
-        this.externalId = 0
-        this.customerWithAssets = null
+        this.shortUrl = ""
+        this.originalUrl = ""
     }
 
-    @Given("Customer externalId {int}")
-    fun customer_external_id(externalId: Int?) {
-        if (externalId != null) {
-            this.externalId = externalId
+    @Given("Short url is {string}")
+    fun hash(shortUrl: String?) {
+        if (shortUrl != null) {
+            this.shortUrl = shortUrl
         }
     }
 
-    @When("Fetch Customer With Assets for externalId")
-    fun fetch_customer_with_assets_for_external_id() {
-        log.info("Getting response for externalId : {}", this.externalId)
+    @When("Resolve URL is called")
+    fun resolve_url_is_called() {
+        log.info("Getting response for hash : {}", this.shortUrl)
         var responseMono = webClient.get()
-            .uri(URL, this.externalId)
+            .uri(URL + this.shortUrl)
             .accept(MediaType.APPLICATION_JSON)
             .retrieve()
-            .bodyToMono(CustomerWithAssets::class.java)
+            .bodyToMono(String::class.java)
 
-        this.customerWithAssets = responseMono.block()
-        log.info("Got response : {}", this.customerWithAssets)
+        this.originalUrl = responseMono.block()
+        log.info("Got response : {}", this.originalUrl)
     }
 
-    @Then("Assets size {int}")
-    fun assets_size(size: Int?) {
-        assert(this.customerWithAssets?.assets?.size == size)
-    }
-
-    @Then("Customer name is {string}")
-    fun customer_name_is(name: String?) {
-        assert(this.customerWithAssets?.customer?.name == name)
+    @Then("Original URL is {string}")
+    fun original_url_is(url: String?) {
+        assert(this.originalUrl == url)
     }
 }
