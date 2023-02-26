@@ -38,6 +38,7 @@ class UrlService(
         // Since this is an MVP product and there are various ways to scale RDBMS as well, so using consistency as a benefit here compared to NoSql scaling for now
         val shortUrl = identifierGenerator.generateIdentifier()
         val url = Url(originalUrl = originalUrl, shortUrl = shortUrl)
+        // TODO: Write only to primary replica using WriteTransaction & update the cache
         return urlRepository.save(url).map { savedUrl -> Constants.DOMAIN + savedUrl!!.shortUrl }
     }
 
@@ -45,6 +46,7 @@ class UrlService(
         urlValidator.validateURL(shortUrl)
         log.info("Resolving URL for : {}", shortUrl)
         var hash = shortUrl.substringAfterLast("/").trim()
+        // TODO: Read from the caching layer, also read from read replica using ReadTransaction
         return urlRepository.findByShortUrl(hash)
             .map { url ->
                 {

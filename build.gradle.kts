@@ -7,6 +7,7 @@ plugins {
     kotlin("plugin.spring") version "1.8.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     id("org.flywaydb.flyway") version "9.8.1"
+    jacoco
 }
 
 group = "com.dkb"
@@ -54,4 +55,28 @@ flyway {
     user = "postgres"
     password = "postgres"
     baselineOnMigrate = true
+}
+
+// should be part of ci
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+
+// should be part of ci
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            element = "PACKAGE"
+
+            limit {
+                value = "COVEREDRATIO"
+                minimum = "0.90".toBigDecimal()
+            }
+
+            excludes = listOf("io.github.raeperd.realworldspringbootkotlin")
+        }
+    }
 }
