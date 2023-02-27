@@ -3,6 +3,7 @@ package com.dkb.urlshortener.controller
 import com.dkb.urlshortener.model.ShortenUrlRequest
 import com.dkb.urlshortener.model.ShortenUrlResponse
 import com.dkb.urlshortener.service.UrlService
+import com.dkb.urlshortener.utils.validation.ValidUrl
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import org.springframework.http.MediaType
@@ -29,7 +30,7 @@ class UrlController(
     }
 
     @GetMapping(produces = [MediaType.APPLICATION_JSON_VALUE])
-    suspend fun resolveShortUrl(@RequestParam("shortUrl") @Valid @NotBlank shortUrl: String): Mono<ResponseEntity<String>> {
+    suspend fun resolveShortUrl(@RequestParam("shortUrl") @Valid @NotBlank @ValidUrl shortUrl: String): Mono<ResponseEntity<String>> {
         return urlService.resolveShortUrl(shortUrl).map { url -> ResponseEntity.ok(url) }
     }
 }

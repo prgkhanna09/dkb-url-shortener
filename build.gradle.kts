@@ -31,8 +31,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("jakarta.validation:jakarta.validation-api:3.0.2")
-    runtimeOnly("org.postgresql:postgresql")
-    runtimeOnly("org.postgresql:r2dbc-postgresql")
+    implementation("org.postgresql:postgresql")
+    implementation("org.postgresql:r2dbc-postgresql")
     jdbc("org.postgresql:postgresql:42.5.1")
     implementation("org.springframework.boot:spring-boot-starter-data-redis") {
         exclude("io.lettuce", "lettuce-core")

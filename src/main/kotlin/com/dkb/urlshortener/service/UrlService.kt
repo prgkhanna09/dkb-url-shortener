@@ -21,6 +21,7 @@ class UrlService(
     private val urlValidator: URLValidator,
     private val urlRepository: UrlRepository,
     private val cacheManager: CacheManagerImpl
+    // Can also add datadog metrics for monitoring, can also add actuator for health monitoring for the service
 ) {
 
     companion object {
@@ -29,6 +30,7 @@ class UrlService(
 
     @Throws(UrlPersistException::class)
     @Transactional
+    // Use WriteTransaction here to read from primary dataSource
     fun shortenUrl(request: ShortenUrlRequest): Mono<String> {
         val originalUrl = request.url
         urlValidator.validateURL(originalUrl)
@@ -54,6 +56,7 @@ class UrlService(
         }
     }
 
+    // Use ReadTransaction here to read from secondary dataSource
     fun resolveShortUrl(shortUrl: String): Mono<String> {
         urlValidator.validateURL(shortUrl)
         log.info("Resolving URL for : {}", shortUrl)

@@ -2,7 +2,7 @@ package com.dkb.urlshortener.utils
 
 import org.junit.jupiter.api.Test
 
-class IdentifierGeneratorTest {
+class IdentifierGeneratorTests {
 
     @Test
     fun testGenerateIdentifier() {
