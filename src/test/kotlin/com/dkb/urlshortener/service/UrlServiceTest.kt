@@ -1,6 +1,7 @@
 package com.dkb.urlshortener.service
 
 import com.dkb.urlshortener.Constants
+import com.dkb.urlshortener.cache.CacheManagerImpl
 import com.dkb.urlshortener.entity.Url
 import com.dkb.urlshortener.handler.exception.InvalidURLException
 import com.dkb.urlshortener.model.ShortenUrlRequest
@@ -28,12 +29,14 @@ class UrlServiceTest {
     private lateinit var identifierGenerator: RandomIdentifierGenerator
     @Mock
     private lateinit var urlValidator: URLValidator
+    @Mock
+    private lateinit var cacheManager: CacheManagerImpl
 
     private lateinit var urlService: UrlService
 
     @BeforeEach
     fun init() {
-        urlService = UrlService(identifierGenerator, urlValidator, urlRepository)
+        urlService = UrlService(identifierGenerator, urlValidator, urlRepository, cacheManager)
     }
 
     @Test

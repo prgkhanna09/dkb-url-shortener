@@ -34,6 +34,12 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("org.postgresql:r2dbc-postgresql")
     jdbc("org.postgresql:postgresql:42.5.1")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis") {
+        exclude("io.lettuce", "lettuce-core")
+    }
+    implementation("redis.clients:jedis:4.3.1")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
