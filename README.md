@@ -38,3 +38,4 @@
 
 To Run use `./gradlew bootRun --args='--spring.profiles.active={profile}'` or `./gradlew clean build` and `java -jar build/libs/dkb-url-shortener-0.0.1.jar`
 
+The Table information can be found in `resources/db/migration/V1__schema.sql`. The DB was created before the implementation was started. 
